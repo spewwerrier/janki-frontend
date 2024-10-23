@@ -1,0 +1,3 @@
+```sh
+bun run dev
+```

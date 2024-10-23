@@ -1,0 +1,5 @@
+
+
+https://old.reddit.com/r/webdev/comments/yz7im1/what_problem_does_usestate_in_react_solve/iwyh12p/
+- What problem does useState in React solve?Question self.webdev
+>  Great question and something that beginners struggle with more often, so no worries if it doesn’t make sense straightaway. In React, a component is nothing more but a regular function that returns JSX. A re-render is the function being called again, because something changes, for example when a prop has changed its value. Every expression in the component is re-run on each render. So a statement like ‘let count = 0’ will re-run when the component re-renders, meaning that if something triggers a re-render, the count variable will always be re-initiated to 0. This is not desirable in a lot of cases, which is why React exposes the useState API. useState ensures that whatever the value of a state variable is, that that value will be the same when the component re-renders. In addition to that, if you use the setter function of useState, not only do you change the value, you also trigger a re-render, because there might be other parts of the component relying on the state variable. Does this help?
