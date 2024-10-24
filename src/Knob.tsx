@@ -52,14 +52,33 @@ export default function KnobPage() {
   }, []);
 
 
-  function ConvertObjToArray(obj: any) {
-    return Array.isArray(obj) ? obj : [];
-  }
-
   // this is to change knob details (knobing the knob lol)
   async function KnobUpdate(event: any) {
     await MakeUpdateRequest(event, knobid)
     await KnobRetrieve()
+  }
+
+  function PrintKnob(props: any) {
+    return (
+      <>
+        <h1 className="badge badge-info" onClick={() => {
+          const modal = document.getElementById(props.param) as HTMLDialogElement;
+          if (modal) {
+            modal.showModal()
+          }
+        }}>{props.param}</h1>
+
+        {props.KnobInfo}
+
+        <dialog id={props.param}>
+          <form onSubmit={KnobUpdate}>
+            <input name={props.param} />
+            <button type="submit">Submit</button>
+          </form>
+        </dialog>
+      </>
+    )
+
   }
 
 
@@ -74,88 +93,16 @@ export default function KnobPage() {
       {knob?.Knob.Creation.toString()}
       <br />
 
-
-      {/* this is a description modal */}
-      <h1 className="block badge badge-info content-center" onClick={() => {
-        const modal = document.getElementById("desc") as HTMLDialogElement;
-        if (modal) {
-          modal.showModal()
-        }
-      }}>Description</h1>
-
-      <dialog id="desc">
-        <form onSubmit={KnobUpdate}>
-          <input name="description" />
-          <button type="submit">Submit</button>
-        </form>
-      </dialog>
-
+      <PrintKnob knobInfo={knob?.Description} param="description" />
       {knob?.Description}
 
-
-      {/* this is a question modal */}
-      <h1 className="badge badge-info" onClick={() => {
-        const modal = document.getElementById("ques") as HTMLDialogElement;
-        if (modal) {
-          modal.showModal()
-        }
-      }}>Questions</h1>
-      {
-        ConvertObjToArray(knob?.Ques["Elements"])
-          .map((x, index) => (
-            <p key={index}>{x}</p>
-          ))
-      }
-
-      <dialog id="ques">
-        <form onSubmit={KnobUpdate}>
-          <input name="ques" />
-          <button type="submit">Submit</button>
-        </form>
-      </dialog>
-
-      {/* this is a references modal */}
-      <h1 className="badge badge-info" onClick={() => {
-        const modal = document.getElementById("refs") as HTMLDialogElement;
-        if (modal) {
-          modal.showModal()
-        }
-      }}>References</h1>
-      {
-        ConvertObjToArray(knob?.Refs["Elements"])
-          .map((x, index) => (
-            <p key={index}>{x}</p>
-          ))
-      }
-
-      <dialog id="refs">
-        <form onSubmit={KnobUpdate}>
-          <input name="refs" />
-          <button type="submit">Submit</button>
-        </form>
-      </dialog>
-
-      <br />
-
-      {/* this is things to read modal */}
-      <h1 className="badge badge-info">Tor</h1>
-      {
-        ConvertObjToArray(knob?.Tor["Elements"])
-          .map((x, index) => (
-            <p key={index}>{x}</p>
-          ))
-      }
-      <br />
-      <h1 className="badge badge-info">Todo</h1>
-      {
-        ConvertObjToArray(knob?.Todo["Elements"])
-          .map((x, index) => (
-            <p key={index}>{x}</p>
-          ))
-      }
-      <br />
-
-      Editor
+      <PrintKnob KnobInfo={knob?.Ques["Elements"]} param="ques" />
+      <PrintKnob KnobInfo={knob?.Refs["Elements"]} param="refs" />
+      <PrintKnob KnobInfo={knob?.Suggestions["Elements"]} param="suggestions" />
+      <PrintKnob KnobInfo={knob?.Todo["Elements"]} param="todo" />
+      <PrintKnob KnobInfo={knob?.Topics["Elements"]} param="topics" />
+      <PrintKnob KnobInfo={knob?.Tor["Elements"]} param="tor" />
+      <PrintKnob KnobInfo={knob?.Urls["Elements"]} param="urls" />
 
     </div>
   );
@@ -165,3 +112,4 @@ export default function KnobPage() {
 export async function knobLoader({ params }: { params: { knobId: string } }) {
   return params.knobId;
 }
+
