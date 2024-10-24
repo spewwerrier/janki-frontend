@@ -1,8 +1,7 @@
-import config from '../config.ts'
-
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import MakeUpdateRequest from "./UpateKnob";
+import { RetrieveSingleKnob } from './RetriveSingleKnob.tsx';
 
 interface Knob {
   Creation: Date;
@@ -32,14 +31,7 @@ export default function KnobPage() {
   // we retrive all details of a single knob
   async function KnobRetrieve() {
     try {
-      const request = await fetch(`${config.SERVER_URL}/knob/read`, {
-        method: "POST",
-        body: new URLSearchParams({
-          api_key: localStorage.getItem("API_KEY")!,
-          knob_id: knobid as string,
-        }),
-      });
-      const data = await request.json();
+      const data = await RetrieveSingleKnob(knobid as string)
       setKnob(data);
     } catch (error) {
       console.error("Error fetching knob data:", error);
@@ -53,10 +45,13 @@ export default function KnobPage() {
 
 
   // this is to change knob details (knobing the knob lol)
-  async function KnobUpdate(event: any) {
+  async function KnobUpdate(event: FormEvent) {
     await MakeUpdateRequest(event, knobid)
+    // the changes are done in server and we need to refetch the knob from server
+    // to change the ui without requiring a refersh
     await KnobRetrieve()
   }
+
 
   function PrintKnob(props: any) {
     return (
@@ -68,7 +63,7 @@ export default function KnobPage() {
           }
         }}>{props.param}</h1>
 
-        {props.KnobInfo}
+        <ExtractKnobElements knobInfo={props.KnobInfo} />
 
         <dialog id={props.param}>
           <form onSubmit={KnobUpdate}>
@@ -80,7 +75,6 @@ export default function KnobPage() {
     )
 
   }
-
 
   return (
     <div className="flex justify-end flex-col items-center">
@@ -96,20 +90,44 @@ export default function KnobPage() {
       <PrintKnob knobInfo={knob?.Description} param="description" />
       {knob?.Description}
 
-      <PrintKnob KnobInfo={knob?.Ques["Elements"]} param="ques" />
-      <PrintKnob KnobInfo={knob?.Refs["Elements"]} param="refs" />
-      <PrintKnob KnobInfo={knob?.Suggestions["Elements"]} param="suggestions" />
-      <PrintKnob KnobInfo={knob?.Todo["Elements"]} param="todo" />
-      <PrintKnob KnobInfo={knob?.Topics["Elements"]} param="topics" />
-      <PrintKnob KnobInfo={knob?.Tor["Elements"]} param="tor" />
-      <PrintKnob KnobInfo={knob?.Urls["Elements"]} param="urls" />
+      <PrintKnob KnobInfo={knob?.Ques} param="ques" />
+      <PrintKnob KnobInfo={knob?.Refs} param="refs" />
+      <PrintKnob KnobInfo={knob?.Suggestions} param="suggestions" />
+      <PrintKnob KnobInfo={knob?.Todo} param="todo" />
+      <PrintKnob KnobInfo={knob?.Topics} param="topics" />
+      <PrintKnob KnobInfo={knob?.Tor} param="tor" />
+      <PrintKnob KnobInfo={knob?.Urls} param="urls" />
 
     </div>
   );
 }
 
 
+// our url http://localhost:9999/knob/{id}. It returns id
 export async function knobLoader({ params }: { params: { knobId: string } }) {
   return params.knobId;
 }
 
+// knobInfo?.Elements was complaining and I have to do this. SMH
+// our elements are array containing strings. Should work on other
+// similar types cuz js
+interface KnobElements {
+  Elements: Array<string>
+}
+
+// loops over Element of an object. This element includes all of our information
+// of our KnobDescription
+function ExtractKnobElements({ knobInfo }: { knobInfo: KnobElements }) {
+  if (!knobInfo?.Elements) {
+    return null;
+  }
+
+  return (
+    <div>
+      {knobInfo.Elements.map((element: string, index: number) => {
+        console.log(element);
+        return <div key={index}>{element}</div>;
+      })}
+    </div>
+  );
+}
