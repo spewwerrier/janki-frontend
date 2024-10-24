@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import MakeUpdateRequest from "./UpateKnob";
+import MakeUpdateRequest from "./UpdateKnob";
 import { RetrieveSingleKnob } from './RetriveSingleKnob.tsx';
 
 interface Knob {
@@ -66,9 +66,9 @@ export default function KnobPage() {
         <ExtractKnobElements knobInfo={props.KnobInfo} />
 
         <dialog id={props.param}>
-          <form onSubmit={KnobUpdate}>
-            <input name={props.param} />
-            <button type="submit">Submit</button>
+          <form className="join" onSubmit={KnobUpdate}>
+            <input className="input input-bordered join-item" name={props.param} />
+            <button className="btn join-item btn-primary" type="submit">Submit</button>
           </form>
         </dialog>
       </>

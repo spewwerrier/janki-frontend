@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     element: <Login/>
   },
   {
-    path: "/new",
+    path: "/newknob",
     element: <CreateKnob/>
   },
   {

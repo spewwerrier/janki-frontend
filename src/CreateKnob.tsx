@@ -1,10 +1,10 @@
-const SERVER_URL: string = "http://localhost:8080/knob/create"
+import config from "../config"
 
 export default function CreateKnob() {
-  async function MakeKnobRequest(event: any) {
+  async function CreateNewKnob(event: any) {
     event.preventDefault()
     const formdata = new FormData(event.target)
-    const request = await fetch(`${SERVER_URL}`, {
+    const request = await fetch(`${config.SERVER_URL}/knob/create`, {
       method: "POST",
       body: new URLSearchParams({
         "knob_name": formdata.get("knobname") as string,
@@ -21,11 +21,8 @@ export default function CreateKnob() {
 
   return (
     <>
-      <form onSubmit={MakeKnobRequest}>
-        <label className="input input-bordered flex items-center gap-2">
-          <input type="text" className="grow" placeholder="Knob Name" name="knobname" />
-        </label>
-        <textarea className="w-96 textarea textarea-primary" placeholder="Knob Description" name="knobdesc"></textarea><br />
+      <form onSubmit={CreateNewKnob}>
+        <textarea className="w-96 textarea textarea-primary" placeholder="Knob Title" name="knobname"></textarea><br />
         <button className="btn btn-primary" type="submit">Submit</button>
       </form>
     </>

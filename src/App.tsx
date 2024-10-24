@@ -1,8 +1,7 @@
-import Login from "./Login";
-import Profile from "./Profile";
+import config from "../config";
+import Login, { HasLoggedIn } from "./Login";
 import RetriveKnobs from "./RetriveKnobs";
 
-const SERVER_URL: string = "http://localhost:8080"
 function App() {
   return (
     <>
@@ -18,16 +17,15 @@ function App() {
               <ul
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-auto p-2 shadow">
-                <li>server url {SERVER_URL}</li>
+                <li>connected to server: {config.SERVER_URL}</li>
               </ul>
             </div>
           </a>
-        <a href="./new">New</a>
+        <a href="./newknob">New</a>
         <a href="./profile">Profile</a>
         </div>
       </div>
-      <Login />
-      <RetriveKnobs/>
+      { HasLoggedIn()?<RetriveKnobs/>: <Login/>}
     </>
   );
 }

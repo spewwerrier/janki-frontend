@@ -1,18 +1,18 @@
-import { FormEvent, useEffect, useState } from "react"
+import { useState } from "react"
+import config from "../config"
 
-function HasLoggedIn() :boolean{
+export function HasLoggedIn() :boolean{
   return localStorage.getItem("API_KEY") !== null
  
 }
 
-const SERVER_URL: string = "http://192.168.101.13:8080/users/read"
 
 function Login() {
   const [response, setResponse] = useState("")
   async function MakeLoginRequest(event:any) {
     event.preventDefault()
     const formdata = new FormData(event.target)
-    const request = await fetch(`${SERVER_URL}`, {
+    const request = await fetch(`${config.SERVER_URL}/users/read`, {
       method: "POST",
       body: new URLSearchParams({
         "username": formdata.get("username") as string,
@@ -27,12 +27,9 @@ function Login() {
     setResponse(data)
     console.log("resp", data)
     localStorage.setItem("API_KEY", data)
+    window.location.href = "/"
   }
 
-  if(HasLoggedIn()){
-   return <>
-   </> 
-  }
   return (
     <>
       <form onSubmit={MakeLoginRequest}>
